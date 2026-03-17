@@ -1,0 +1,248 @@
+# 积分详细统计接口
+
+info:
+  title: 积分详细统计接口
+  description: 获取用户积分详细统计信息，包括当前积分、月度收支、今日收支、累计收支及积分记录列表
+  version: 1.0.0
+
+paths:
+  /api/integral/detail:
+    get:
+      summary: 积分详细统计
+      description: 获取用户积分详细统计信息
+      parameters:
+        - name: type
+          in: query
+          required: false
+          default: all
+          description: 筛选类型
+          schema:
+            type: string
+            enum: [all, income, expense, transfer]
+        - name: page
+          in: query
+          required: false
+          default: 1
+          description: 页码
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          default: 20
+          description: 每页条数
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      current_integral:
+                        type: number
+                        example: 12580
+                      monthly:
+                        type: object
+                        properties:
+                          income:
+                            type: number
+                            example: 1280
+                          expense:
+                            type: number
+                            example: 350
+                      today:
+                        type: object
+                        properties:
+                          income:
+                            type: number
+                            example: 105
+                          expense:
+                            type: number
+                            example: 0
+                      total:
+                        type: object
+                        properties:
+                          income:
+                            type: number
+                            example: 28650
+                          expense:
+                            type: number
+                            example: 16070
+                      list:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            uid:
+                              type: integer
+                              example: 1001
+                            title:
+                              type: string
+                              example: 购买商品赠送积分
+                            category:
+                              type: string
+                              example: integral
+                            type:
+                              type: string
+                              example: gain
+                            number:
+                              type: number
+                              example: 100
+                            balance:
+                              type: number
+                              example: 12580
+                            pm:
+                              type: integer
+                              example: 1
+                            add_time:
+                              type: string
+                              example: "2024-03-17 10:30:00"
+                            time_key:
+                              type: string
+                              example: "2024-03"
+                            time:
+                              type: string
+                              example: "2024-03"
+                            day:
+                              type: string
+                              example: "2024-03-17"
+                            is_frozen:
+                              type: integer
+                              example: 0
+                      count:
+                        type: integer
+                        example: 1
+                      times:
+                        type: array
+                        items:
+                          type: string
+                        example: ["2024-03"]
+        '410000':
+          description: 未登录或token无效
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 410000
+                  msg:
+                    type: string
+                    example: 请登录
+        '410001':
+          description: 权限不足
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 410001
+                  msg:
+                    type: string
+                    example: 无权限访问
+
+examples:
+  获取全部积分记录:
+    request:
+      method: GET
+      url: http://localhost:8000/api/integral/detail?type=all
+      headers:
+        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+    response:
+      status: 200
+      body:
+        status: 200
+        msg: success
+        data:
+          current_integral: 12580
+          monthly:
+            income: 1280
+            expense: 350
+          today:
+            income: 105
+            expense: 0
+          total:
+            income: 28650
+            expense: 16070
+          list:
+            - id: 1
+              uid: 1001
+              title: 购买商品赠送积分
+              category: integral
+              type: gain
+              number: 100
+              balance: 12580
+              pm: 1
+              add_time: "2024-03-17 10:30:00"
+              time_key: "2024-03"
+              time: "2024-03"
+              day: "2024-03-17"
+              is_frozen: 0
+          count: 1
+          times: ["2024-03"]
+
+  获取收入积分记录:
+    request:
+      method: GET
+      url: http://localhost:8000/api/integral/detail?type=income
+      headers:
+        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+
+  获取支出积分记录:
+    request:
+      method: GET
+      url: http://localhost:8000/api/integral/detail?type=expense
+      headers:
+        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+
+  获取转赠积分记录:
+    request:
+      method: GET
+      url: http://localhost:8000/api/integral/detail?type=transfer
+      headers:
+        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+
+implementation:
+  筛选逻辑:
+    - all: 查询所有积分记录
+    - income: 只查询收入记录（pm=1）
+    - expense: 只查询支出记录（pm=0）
+    - transfer: 只查询转赠相关记录（type=transfer_in或transfer_out）
+  统计数据:
+    - 当月统计: 从当月1号到当月最后一天
+    - 今日统计: 从今日0点到23:59:59
+    - 累计统计: 所有历史记录
+  分页处理:
+    - 默认每页20条记录
+    - 支持通过page和limit参数自定义
+  时间格式:
+    - add_time: YYYY-MM-DD HH:MM:SS
+    - time_key和time: YYYY-MM
+    - day: YYYY-MM-DD
+  冻结状态:
+    - is_frozen=1: 积分处于冻结状态
+    - is_frozen=0: 积分正常可用
