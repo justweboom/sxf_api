@@ -169,6 +169,10 @@ paths:
                           type: string
                           description: 年月
                         example: ["2024-03"]
+                      description:
+                        type: string
+                        description: 积分明细说明文字
+                        example: 本积分明细数据仅供参考，实际积分以系统记录为准
         '410000':
           description: 未登录或token无效
           content:
@@ -239,6 +243,7 @@ examples:
               is_frozen: 0
           count: 1
           times: ["2024-03"]
+          description: 本积分明细数据仅供参考，实际积分以系统记录为准
 
   获取收入积分记录:
     request:
