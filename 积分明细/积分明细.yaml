@@ -49,95 +49,125 @@ paths:
                 properties:
                   status:
                     type: integer
+                    description: 响应状态码
                     example: 200
                   msg:
                     type: string
+                    description: 响应消息
                     example: success
                   data:
                     type: object
+                    description: 响应数据主体
                     properties:
                       current_integral:
                         type: number
+                        description: 当前积分余额
                         example: 12580
                       monthly:
-                        description: 月度收支
                         type: object
+                        description: 月度收支
                         properties:
                           income:
                             type: number
+                            description: 本月收入积分
                             example: 1280
                           expense:
                             type: number
+                            description: 本月支出积分
                             example: 350
                       today:
                         type: object
+                        description: 今日收支
                         properties:
                           income:
                             type: number
+                            description: 今日收入积分
                             example: 105
                           expense:
                             type: number
+                            description: 今日支出积分
                             example: 0
                       total:
                         type: object
+                        description: 累计收支
                         properties:
                           income:
                             type: number
+                            description: 累计收入积分
                             example: 28650
                           expense:
                             type: number
+                            description: 累计支出积分
                             example: 16070
                       list:
                         type: array
+                        description: 积分记录列表
                         items:
                           type: object
+                          description: 积分记录项
                           properties:
                             id:
                               type: integer
+                              description: 记录ID
                               example: 1
                             uid:
                               type: integer
+                              description: 用户ID
                               example: 1001
                             title:
                               type: string
+                              description: 记录标题
                               example: 购买商品赠送积分
                             category:
                               type: string
+                              description: 分类（integral: 积分）
                               example: integral
                             type:
                               type: string
+                              description: 类型
                               example: gain
                             number:
                               type: number
+                              description: 积分数量
                               example: 100
                             balance:
                               type: number
+                              description: 操作后余额
                               example: 12580
                             pm:
                               type: integer
+                              description: 收支类型（1: 收入, 0: 支出）
                               example: 1
                             add_time:
                               type: string
+                              description: 添加时间
                               example: "2024-03-17 10:30:00"
                             time_key:
                               type: string
+                              description: 时间键（年月）
                               example: "2024-03"
                             time:
                               type: string
+                              description: 时间（年月）
                               example: "2024-03"
                             day:
                               type: string
+                              description: 日期（年月日）
                               example: "2024-03-17"
                             is_frozen:
                               type: integer
+                              description: 是否冻结（1: 是, 0: 否）
                               example: 0
                       count:
                         type: integer
+                        description: 记录总数
                         example: 1
                       times:
                         type: array
+                        description: 时间分组列表
                         items:
                           type: string
+                          description: 年月
                         example: ["2024-03"]
         '410000':
           description: 未登录或token无效
@@ -148,9 +178,11 @@ paths:
                 properties:
                   status:
                     type: integer
+                    description: 错误状态码
                     example: 410000
                   msg:
                     type: string
+                    description: 错误消息
                     example: 请登录
         '410001':
           description: 权限不足
@@ -161,9 +193,11 @@ paths:
                 properties:
                   status:
                     type: integer
+                    description: 错误状态码
                     example: 410001
                   msg:
                     type: string
+                    description: 错误消息
                     example: 无权限访问
 
 examples:
