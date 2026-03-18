@@ -60,6 +60,7 @@ paths:
                         type: number
                         example: 12580
                       monthly:
+                        description: 月度收支
                         type: object
                         properties:
                           income:
